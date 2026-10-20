@@ -303,6 +303,7 @@ a.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#b
 .map svg{width:100%;height:auto;display:block;border-radius:14px}
 .map figcaption{font-size:13px;color:var(--ink-2);padding:8px 8px 4px}
 .map__stage{position:relative;container-type:inline-size;border-radius:14px;overflow:hidden}
+.m-t::before,.ticker__list span::before{content:attr(data-t)}
 .m-t{position:absolute;white-space:nowrap;direction:rtl;font:600 12px/1.15 var(--f-body);font-size:clamp(10px,3.25cqi,16px);color:var(--ink);pointer-events:none;
   text-shadow:0 0 2px var(--land),0 0 3px var(--land),0 0 4px var(--land),0 0 6px var(--land);transform:translate(-50%,-50%)}
 .m-t--end{transform:translate(-100%,-50%)}
