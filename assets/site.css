@@ -173,6 +173,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .skip__panel--y{background-color:var(--yellow);color:var(--forest)}
 .skip__word{font-family:var(--f-display);font-weight:700;font-size:26px;font-size:clamp(20px,8.6cqi,54px);line-height:1;direction:rtl;white-space:nowrap}
 .skip__num{font-family:var(--f-stencil);font-weight:900;font-size:40px;font-size:clamp(26px,12.4cqi,86px);line-height:.9;letter-spacing:.05em;white-space:nowrap}
+/* the painted text is decoration: drawn from data-t so crawlers and copy-paste see only the link's label */
+.skip__word::before,.skip__num::before{content:attr(data-t)}
 .skip__cap{display:flex;justify-content:center;gap:8px;margin-top:10px;font-size:14px;font-weight:600;color:var(--on-forest-2);direction:rtl}
 .skip__cap svg{width:16px;height:16px;color:var(--leaf)}
 
