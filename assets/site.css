@@ -302,6 +302,16 @@ a.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#b
 .map{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:8px;margin:0;min-width:0}
 .map svg{width:100%;height:auto;display:block;border-radius:14px}
 .map figcaption{font-size:13px;color:var(--ink-2);padding:8px 8px 4px}
+.map__stage{position:relative;container-type:inline-size;border-radius:14px;overflow:hidden}
+.m-t{position:absolute;white-space:nowrap;direction:rtl;font:600 12px/1.15 var(--f-body);font-size:clamp(10px,3.25cqi,16px);color:var(--ink);pointer-events:none;
+  text-shadow:0 0 2px var(--land),0 0 3px var(--land),0 0 4px var(--land),0 0 6px var(--land);transform:translate(-50%,-50%)}
+.m-t--end{transform:translate(-100%,-50%)}
+.m-t--start{transform:translate(0,-50%)}
+.m-t--on{font-weight:700;font-size:clamp(12px,4cqi,19px);color:var(--forest)}
+.m-t--ring{font-weight:700;font-size:clamp(9px,2.9cqi,14px);color:var(--green)}
+.m-t--scale{font-weight:700;font-size:clamp(9px,2.9cqi,14px);color:#45554B}
+.m-t--sea{font-weight:600;font-size:clamp(9px,2.9cqi,14px);color:#4E766B;letter-spacing:.05em;text-shadow:none;transform:translate(-50%,-50%) rotate(-58deg)}
+.m-t--base{font-weight:700;color:#fff;background:var(--forest);padding:.28em .8em .32em;border-radius:999px;text-shadow:none;font-size:clamp(10px,3.2cqi,15px)}
 .m-sea{fill:var(--sea)}
 .m-land{fill:var(--land)}
 .m-coast{fill:none;stroke:#A9CABF;stroke-width:1.5}

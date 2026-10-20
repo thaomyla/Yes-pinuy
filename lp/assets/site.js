@@ -51,8 +51,10 @@
     if (e.key === 'Escape') $$('.sheet').forEach(function (s) { if (!s.hidden) closeSheet(s); });
   });
 
-  /* a tel: link can be blocked inside embedded viewers: if the page is still in front a moment later, show the number */
-  d.addEventListener('click', function (e) {
+  /* a tel: link can be blocked when the page is shown inside another app's frame: there, if the page is still
+     in front a moment later, show the number. On the open web the phone's own dialer handles it. */
+  var embedded = (function () { try { return window.self !== window.top; } catch (err) { return true; } })();
+  if (embedded) d.addEventListener('click', function (e) {
     var a = e.target.closest ? e.target.closest('a[data-call]') : null;
     if (!a) return;
     var left = false;
