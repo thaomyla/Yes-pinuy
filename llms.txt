@@ -13,8 +13,11 @@
 - [פינוי פסולת גושית ורהיטים](https://thaomyla.github.io/Yes-pinuy/pinui-psolet-gushit.html): ספות, ארונות, מזרנים, מוצרי חשמל וציוד ישן. הגראפ מעמיס, אתם לא סוחבים.
 - [פינוי גזם](https://thaomyla.github.io/Yes-pinuy/pinui-gezem.html): ערימות גזם מגינות, מחצרות, ממטעים ומשטחים ציבוריים, גם בכמויות גדולות.
 - [פינוי פסולת לרשויות ולמוסדות](https://thaomyla.github.io/Yes-pinuy/rashuyot-umosdot.html): הסכם מסגרת, דיווח חודשי, סבבי גזם וגרוטאות, פינוי מפגעים.
+- [קו מהיר לקבלנים](https://thaomyla.github.io/Yes-pinuy/kav-mahir-lekablanim.html): קבלנים שומרים את פרטי האתר בטלפון, ומזמינים החלפת מכולה, פינוי סופי או משאית מנוף בלחיצה בוואטסאפ.
 
 ## מחירים
+
+טווחים כלליים בלבד. המחיר הסופי נקבע לפי תמונה, כמות ומיקום, ונמסר לפני שמגיעים.
 
 - [מחירון פינוי פסולת ומכולות](https://thaomyla.github.io/Yes-pinuy/mechiron.html)
 - [כמה עולה מכולה](https://thaomyla.github.io/Yes-pinuy/kama-ola-mechola.html)

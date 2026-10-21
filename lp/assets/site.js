@@ -206,4 +206,130 @@
     if (CITIES[h]) setCity(h, false);
     window.addEventListener('hashchange', function () { var k = location.hash.replace('#', ''); if (CITIES[k]) setCity(k, true); });
   }
+
+  /* ---------- photo guide: tick off the three shots ---------- */
+  $$('[data-shoot]').forEach(function (sec) {
+    var boxes = $$('input[data-shot]', sec), bars = $$('.shoot__meter i', sec), out = $('[data-shot-state]', sec);
+    function upd() {
+      var n = 0;
+      boxes.forEach(function (b) { var l = b.closest('.shot'); if (l) l.classList.toggle('is-on', b.checked); if (b.checked) n++; });
+      bars.forEach(function (b, i) { b.classList.toggle('on', i < n); });
+      sec.classList.toggle('is-done', n === boxes.length);
+      if (out) out.textContent = n === 0 ? 'סמנו כל תמונה שצילמתם'
+        : n < boxes.length ? 'צילמתם ' + n + ' מתוך ' + boxes.length + '. עוד ' + (boxes.length - n === 1 ? 'אחת.' : 'שתיים.')
+        : 'מעולה, יש לכם הכול. עכשיו שולחים.';
+    }
+    boxes.forEach(function (b) { b.addEventListener('change', function () { sec.classList.remove('play'); upd(); }); });
+    /* a quick "shutter" pass over the three viewfinders the first time the section shows */
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var seen = new IntersectionObserver(function (en) {
+        if (!en[0].isIntersecting) return;
+        seen.disconnect();
+        sec.classList.add('play');
+        setTimeout(function () { sec.classList.remove('play'); }, 2200);
+      }, { threshold: 0.35 });
+      seen.observe($('.shots', sec) || sec);
+    }
+  });
+
+  /* ---------- contractor fast line: saved job sites, one-tap WhatsApp orders ---------- */
+  var kav = $('[data-kav]');
+  if (kav) (function () {
+    var KEY = 'ys-kav-v1', MAX = 5, st = { sites: [], cur: '' }, stored = true, editing = null, armed = null;
+    try {
+      var raw = window.localStorage.getItem(KEY), o = raw ? JSON.parse(raw) : null;
+      if (o && Array.isArray(o.sites)) st = o;
+    } catch (err) { stored = false; }
+    function save() { try { window.localStorage.setItem(KEY, JSON.stringify(st)); } catch (err) { stored = false; } }
+    var form = $('[data-kav-form]', kav), panel = $('[data-kav-panel]', kav), errBox = $('[data-kav-err]', kav);
+    var del = $('[data-kav-del]', kav), delLabel = del.textContent;
+    var F = { name: d.getElementById('k-name'), addr: d.getElementById('k-addr'), kind: d.getElementById('k-kind'), phone: d.getElementById('k-phone'), note: d.getElementById('k-note') };
+    function cur() { for (var i = 0; i < st.sites.length; i++) if (st.sites[i].id === st.cur) return st.sites[i]; return st.sites[0] || null; }
+    function when() { var w = $('input[name="kwhen"]:checked', kav); return w ? w.value : 'היום'; }
+    function message(line, s) {
+      var l = ['שלום, כאן ' + s.name + '.', line, 'אתר: ' + s.addr, 'סוג פסולת: ' + s.kind, 'מתי: ' + when()];
+      if (s.phone) l.push('טלפון באתר: ' + s.phone);
+      if (s.note) l.push('הערה לנהג: ' + s.note);
+      return l.join('\n');
+    }
+    function links() {
+      var s = cur(); if (!s) return;
+      $$('[data-kav-act]', kav).forEach(function (a) { a.href = waHref(message(a.getAttribute('data-kav-line'), s)); });
+    }
+    function fill(s) {
+      ['name', 'addr', 'phone', 'note'].forEach(function (k) { F[k].value = s ? (s[k] || '') : ''; });
+      F.kind.value = s ? s.kind : F.kind.options[0].value;
+    }
+    function disarm() { clearTimeout(armed); armed = null; del.classList.remove('is-armed'); del.textContent = delLabel; }
+    function draw() {
+      var s = cur(), showForm = editing !== null || !s;
+      form.hidden = !showForm; panel.hidden = showForm;
+      $('[data-kav-cancel]', kav).hidden = !s;
+      var title = $('[data-kav-title]', kav);
+      if (title) title.textContent = editing && editing !== 'new' ? 'עריכת פרטי האתר' : (s ? 'אתר עבודה נוסף' : 'פרטי אתר העבודה. ממלאים פעם אחת.');
+      if (showForm) return;
+      st.cur = s.id;
+      var box = $('[data-kav-sites]', kav);
+      box.innerHTML = '';
+      if (st.sites.length > 1) st.sites.forEach(function (x) {
+        var b = d.createElement('button');
+        b.type = 'button'; b.textContent = x.addr; b.setAttribute('aria-pressed', String(x.id === s.id));
+        b.addEventListener('click', function () { st.cur = x.id; save(); draw(); });
+        box.appendChild(b);
+      });
+      $('[data-kav-addr]', kav).textContent = s.addr;
+      $('[data-kav-meta]', kav).textContent = s.name + ' · ' + s.kind + (s.phone ? ' · ' + s.phone : '');
+      $('[data-kav-new]', kav).hidden = st.sites.length >= MAX;
+      var note = $('[data-kav-store]', kav);
+      note.hidden = stored;
+      if (!stored) note.textContent = 'הדפדפן הזה לא מאפשר לשמור. הכפתורים יעבדו עד שתסגרו את הדף.';
+      disarm();
+      links();
+    }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = { name: F.name.value.trim(), addr: F.addr.value.trim(), kind: F.kind.value, phone: F.phone.value.trim(), note: F.note.value.trim() };
+      var miss = [];
+      if (!v.name) miss.push('שם');
+      if (!v.addr) miss.push('כתובת האתר');
+      F.name.setAttribute('aria-invalid', String(!v.name));
+      F.addr.setAttribute('aria-invalid', String(!v.addr));
+      if (miss.length) { errBox.hidden = false; errBox.textContent = 'חסר: ' + miss.join(', ') + '.'; (v.name ? F.addr : F.name).focus(); return; }
+      errBox.hidden = true;
+      if (editing && editing !== 'new') {
+        st.sites.forEach(function (x) { if (x.id === editing) { Object.keys(v).forEach(function (k) { x[k] = v[k]; }); } });
+        st.cur = editing;
+      } else {
+        v.id = 's' + Date.now().toString(36);
+        st.sites.push(v);
+        if (st.sites.length > MAX) st.sites.shift();
+        st.cur = v.id;
+      }
+      editing = null;
+      save();
+      draw();
+      var first = $('.kact--main', kav);
+      if (first) first.focus();
+    });
+    $('[data-kav-cancel]', kav).addEventListener('click', function () { editing = null; errBox.hidden = true; draw(); });
+    $('[data-kav-edit]', kav).addEventListener('click', function () { var s = cur(); editing = s.id; fill(s); draw(); F.addr.focus(); });
+    $('[data-kav-new]', kav).addEventListener('click', function () {
+      var s = cur(); editing = 'new'; fill(null); F.name.value = s ? s.name : ''; draw(); F.addr.focus();
+    });
+    del.addEventListener('click', function () {
+      if (!armed) { del.classList.add('is-armed'); del.textContent = 'בטוחים? לחצו שוב'; armed = setTimeout(disarm, 4000); return; }
+      var s = cur();
+      st.sites = st.sites.filter(function (x) { return x.id !== s.id; });
+      st.cur = st.sites[0] ? st.sites[0].id : '';
+      save(); disarm();
+      if (!st.sites.length) fill(null);
+      draw();
+    });
+    kav.addEventListener('change', function (e) {
+      if (e.target.name !== 'kwhen') return;
+      $$('.kav__when .chip', kav).forEach(function (l) { l.classList.toggle('is-on', $('input', l).checked); });
+      links();
+    });
+    draw();
+  })();
 })();
